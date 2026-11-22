@@ -9,6 +9,7 @@
 //        [--whisper-model PATH] [--drafts DIR] [--out DIR] [--plan-only]
 
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { basename, extname, join, resolve } from "node:path";
 
@@ -37,8 +38,14 @@ function parseArgs(argv) {
   return a;
 }
 
+// On Windows npx is npx.cmd, which Node starts only through a shell; quote every argument for cmd.exe.
+// TKP_NPX_VIA_SHELL=1 takes the Windows path on any OS, for tests.
+const winShell = (cmd) => cmd === "npx" && (process.platform === "win32" || process.env.TKP_NPX_VIA_SHELL === "1");
+const quoteWin = (a) => (/^[\w./:@=-]+$/.test(a) ? a : `"${String(a).replace(/"/g, '""')}"`);
+
 function run(cmd, args, { allowFail = false } = {}) {
-  const r = spawnSync(cmd, args, { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+  const shell = winShell(cmd);
+  const r = spawnSync(cmd, shell ? args.map(quoteWin) : args, { encoding: "utf8", maxBuffer: 64 * 1024 * 1024, shell });
   if (r.error) throw new Error(`${cmd} could not start: ${r.error.message}`);
   if (r.status !== 0 && !allowFail) throw new Error(`${cmd} failed (exit ${r.status}): ${(r.stderr || r.stdout).slice(-800)}`);
   return r;
@@ -342,7 +349,8 @@ function main() {
   console.log(r.stdout.trim());
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Compare real paths: a file:// string breaks on spaces ("Application Support") and on Windows drive letters.
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
     main();
   } catch (err) {

@@ -102,5 +102,19 @@ for (const slug of presetSlugs) {
 check("presets plan and compile", presetSlugs.length === 5 && presetProblems.length === 0, presetProblems.join("; ") || `${presetSlugs.length} presets`);
 
 rmSync(work, { recursive: true, force: true });
+// Claude Desktop installs under "Application Support" and Windows paths have spaces and drive letters:
+// the scripts must still run their main() from such a folder.
+{
+  const spaced = join(homedir(), ".cache", "timkeypro-selftest", "path with space");
+  mkdirSync(spaced, { recursive: true });
+  const runs = [];
+  for (const f of ["apply-style.mjs", "measure-style.mjs"]) {
+    writeFileSync(join(spaced, f), readFileSync(join(here, "..", "scripts", f)));
+    const r = spawnSync(process.execPath, [join(spaced, f)], { encoding: "utf8" });
+    runs.push([f, /Usage:/.test(r.stdout + r.stderr)]);
+  }
+  rmSync(spaced, { recursive: true, force: true });
+  check("scripts run from a path with spaces", runs.every(([, ok]) => ok), runs.map(([f, ok]) => `${f} ${ok ? "ran" : "did nothing"}`).join(", "));
+}
 console.log(failed ? `\n${failed} check(s) failed` : "\nAll checks passed");
 process.exit(failed ? 1 : 0);
