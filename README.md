@@ -13,6 +13,31 @@ TimKeyPro không nhận file video nào của bạn.
 
 Skill chỉ chép **cách dựng**, không chép **nội dung**: không lấy hình, nhạc, giọng hay chữ của video gốc.
 
+## Xem chạy thật
+
+Mỗi ảnh động là một lượt chạy thật trong Claude Code, câu lệnh gõ bằng tiếng Việt. Phần chờ được tua nhanh
+(có nhãn "tua nhanh" ở góc), câu lệnh và kết quả để tốc độ thường.
+
+**`clone-edit-style`**: "Đo phong cách edit của video-mau.mp4 và cho tôi xem thẻ phong cách, chưa dựng gì cả"
+
+![clone-edit-style đo phong cách edit của một video mẫu](assets/demo-clone-edit-style.gif)
+
+**`kich-ban-ban-hang`**: kịch bản TikTok Shop 15 giây cho một bình giữ nhiệt mẫu, chưa có review hay số liệu
+
+![kich-ban-ban-hang viết kịch bản bán hàng 15 giây](assets/demo-kich-ban-ban-hang.gif)
+
+**`mot-video-nhieu-nen-tang`**: một video thành bài đăng cho TikTok, YouTube Shorts và Facebook Reels
+
+![mot-video-nhieu-nen-tang lập bảng bài đăng cho từng nền tảng](assets/demo-mot-video-nhieu-nen-tang.gif)
+
+**`hook-5-giay`**: năm hook 5 giây cho video lịch sử La Mã, chấm điểm và chọn một, không dùng connector
+
+![hook-5-giay viết và chấm điểm hook 5 giây](assets/demo-hook-5-giay.gif)
+
+**`kiem-tra-chan-thuc`**: tự kiểm tra một video trước khi đăng YouTube và TikTok
+
+![kiem-tra-chan-thuc chấm điểm video theo quy định nội dung không chân thực](assets/demo-kiem-tra-chan-thuc.gif)
+
 ## Cài đặt (5 phút)
 
 ### 1. Cài công cụ trên máy
