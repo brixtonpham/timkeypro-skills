@@ -69,6 +69,14 @@ const split = splitLongCues(long, 24).split("\n\n").filter(Boolean);
 const lines = split.map((b) => b.split("\n")[2]);
 const lastEnd = split[split.length - 1].split("\n")[1].split("--> ")[1];
 check("long caption cues are split", split.length >= 3 && lines.every((l) => l.length <= 24) && lastEnd === "00:00:06,000", `${split.length} cues, longest ${Math.max(...lines.map((l) => l.length))} chars`);
+const { fixOverlaps } = await import(join(scripts, "apply-style.mjs"));
+{
+  const messy = "1\n00:00:02,000 --> 00:00:04,000\nthứ hai\n\n2\n00:00:00,000 --> 00:00:02,100\nthứ nhất\n\n3\n00:00:04,000 --> 00:00:05,000\nba\n\n4\n00:00:04,000 --> 00:00:06,000\nbốn\n\n5\n00:00:07,000 --> 00:00:06,500\nngược\n";
+  const { srt: clean, fixed } = fixOverlaps(messy);
+  const cues = clean.split("\n\n").filter(Boolean).map((b) => b.split("\n")[1].split(" --> "));
+  const ordered = cues.every(([a, b], i) => a < b && (i === 0 || cues[i - 1][1] <= a));
+  check("overlapping caption cues are repaired", ordered && cues.length === 3 && fixed === 3 && clean.includes("ba bốn"), clean.replace(/\n/g, " | "));
+}
 const merged = mergeShortCues(readFileSync(srt, "utf8"));
 check("short caption cues are merged", merged.split("-->").length === 2, merged.replace(/\n/g, " | "));
 
@@ -100,6 +108,34 @@ for (const slug of presetSlugs) {
   if (r.status !== 0) bad(`capcut-cli --check failed: ${(r.stderr || r.stdout).slice(-300)}`);
 }
 check("presets plan and compile", presetSlugs.length === 5 && presetProblems.length === 0, presetProblems.join("; ") || `${presetSlugs.length} presets`);
+
+// Soft transitions: two 2-frame crossfades score about 0.2, under the 0.3 default.
+{
+  const soft = join(work, "soft.mp4");
+  const src = (s) => ["-f", "lavfi", "-t", "12", "-i", `${s}s=640x360:r=30`];
+  sh("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", ...src("testsrc2="), ...src("mandelbrot="), ...src("smptebars="), "-filter_complex", "[0][1]xfade=transition=fade:duration=0.067:offset=10[a];[a][2]xfade=transition=fade:duration=0.067:offset=21,format=yuv420p", "-c:v", "libx264", soft]);
+  sh("node", [join(scripts, "measure-style.mjs"), soft, "--out", join(work, "soft-style"), "--frames", "2"]);
+  const p = JSON.parse(readFileSync(join(work, "soft-style", "style.json"), "utf8")).pacing;
+  const found = [10, 21].every((t) => p.cut_times_s.some((g) => Math.abs(g - t) <= 0.15));
+  check("soft transitions lower the threshold", found && p.cuts === 2 && p.scene_threshold === 0.12 && Boolean(p.threshold_note), `${p.cut_times_s.join(", ")} at ${p.scene_threshold}`);
+}
+
+// A real draft into a scratch drafts folder: a 1 s clip fills longer shots (slowed), and an overlapping
+// .srt is repaired. capcut-cli lint must report no speed mismatch and no caption overlap.
+{
+  const short = join(work, "short.mp4");
+  sh("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", "-f", "lavfi", "-t", "1", "-i", "testsrc2=s=640x360:r=30", "-pix_fmt", "yuv420p", short]);
+  const overlap = join(work, "overlap.srt");
+  writeFileSync(overlap, "1\n00:00:00,000 --> 00:00:03,100\nmột hai ba\n\n2\n00:00:03,000 --> 00:00:06,000\nbốn năm sáu\n");
+  const drafts = join(work, "drafts");
+  mkdirSync(drafts, { recursive: true });
+  const res = JSON.parse(sh("node", [join(scripts, "apply-style.mjs"), join(work, "style", "style.json"), "--voice", video, "--broll", short, "--srt", overlap, "--name", "selftest-draft", "--out", join(work, "apply2"), "--drafts", drafts]).trim().split("\n").pop());
+  const lint = spawnSync("npx", ["--yes", "capcut-cli@0.35.0", "lint", res.draft_path], { encoding: "utf8" });
+  const issues = (JSON.parse(lint.stdout.trim().split("\n").pop()).issues || []).map((i) => i.code);
+  const bad = issues.filter((c) => c === "speed-material-mismatch" || c === "caption-overlap");
+  check("draft has synced speeds and no caption overlap", res.speed_resynced > 0 && res.captions_fixed === 1 && bad.length === 0, `${res.speed_resynced} speeds re-synced, lint: ${issues.join(", ") || "clean"}`);
+  check("the user's .srt is not edited", readFileSync(overlap, "utf8").includes("00:00:03,100"));
+}
 
 rmSync(work, { recursive: true, force: true });
 // Claude Desktop installs under "Application Support" and Windows paths have spaces and drive letters:

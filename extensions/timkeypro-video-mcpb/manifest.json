@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "timkeypro-video",
   "display_name": "TimKeyPro Video: Clone Edit Style",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Clone the edit style of any reference video and build an editable CapCut draft from your own voice and b-roll.",
   "long_description": "Measures how a reference video on your computer is edited (cuts per minute, hook speed, shot lengths, loudness, tempo, brightness, and with whisper.cpp the speaking speed), shows Claude a few frames to read the caption look, zooms and b-roll, and saves the result as a small style.json under ~/TimKeyPro/styles. It then builds an editable CapCut draft from your own voice-over and b-roll in that style. It copies how a video is edited, never what is in it: no footage, music or voice from the reference is kept.\n\nEverything runs on your computer. Needs ffmpeg and ffprobe; Node.js with npx for the CapCut step (it downloads capcut-cli@0.35.0 on first use); whisper.cpp and a model for speech and automatic captions (optional). The check_tools tool lists what is missing and the install command for macOS and Windows.\n\nTimKeyPro is not affiliated with CapCut or ByteDance.",
   "author": {

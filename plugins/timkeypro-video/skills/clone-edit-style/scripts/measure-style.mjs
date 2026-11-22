@@ -4,6 +4,7 @@
 // Needs only ffmpeg and ffprobe on PATH (whisper-cli is optional). Never copies the video.
 //
 // Usage: node measure-style.mjs <video> [--out DIR] [--threshold 0.3] [--whisper-model PATH]
+//   With no --threshold it tries 0.3, then 0.12 when 0.3 finds no cut (soft transitions).
 
 import { spawnSync } from "node:child_process";
 import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from "node:fs";
@@ -12,7 +13,7 @@ import { join, resolve, basename } from "node:path";
 const VERSION = "tkp-style@1";
 
 function parseArgs(argv) {
-  const args = { video: null, out: null, threshold: 0.3, whisperModel: null, frames: 12 };
+  const args = { video: null, out: null, threshold: null, whisperModel: null, frames: 12 };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--out") args.out = argv[++i];
@@ -86,6 +87,20 @@ function detectCuts(video, threshold) {
   const merged = [];
   for (const t of cuts) if (!merged.length || t - merged[merged.length - 1] > 0.25) merged.push(t);
   return merged;
+}
+
+// Soft transitions (fades, dissolves, slides) score far below a hard cut, so a template video can show 0
+// cuts at 0.3 and plan as one slowed-down shot. With no --threshold given and no cut at 0.3, use 0.12;
+// a middle step (0.2) finds only the sharpest fades. A real one-take video still finds none at 0.12.
+const THRESHOLD_STEPS = [0.3, 0.12];
+function findCuts(video, duration, threshold) {
+  if (threshold != null) return { cuts: detectCuts(video, threshold), threshold, stepped: false };
+  let cuts = [];
+  for (const t of THRESHOLD_STEPS) {
+    cuts = detectCuts(video, t);
+    if (cuts.length || duration < 20) return { cuts, threshold: t, stepped: t !== THRESHOLD_STEPS[0] };
+  }
+  return { cuts, threshold: THRESHOLD_STEPS[0], stepped: false };
 }
 
 function pacing(cuts, duration) {
@@ -290,8 +305,9 @@ function main() {
   mkdirSync(work, { recursive: true });
 
   const info = probe(video);
-  const cuts = detectCuts(video, args.threshold);
-  const pace = pacing(cuts, info.duration);
+  const { cuts, threshold, stepped } = findCuts(video, info.duration, args.threshold);
+  const pace = { ...pacing(cuts, info.duration), scene_threshold: threshold };
+  if (stepped) pace.threshold_note = `No cuts at 0.3, so the threshold was lowered to ${threshold}: the reference changes scenes with soft transitions (fades, dissolves). Check the frames: fast camera moves can also pass this threshold.`;
   const audio = info.hasAudio ? loudness(video) : null;
   const beat = info.hasAudio ? tempo(decodeMono(video, 22050), 22050, cuts) : null;
   const sp = info.hasAudio ? speech(video, args.whisperModel, work) : null;

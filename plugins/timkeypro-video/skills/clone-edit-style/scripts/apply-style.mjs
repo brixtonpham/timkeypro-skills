@@ -140,7 +140,7 @@ function srtFromWhisper(voice, model, maxChars, language, workDir) {
   run("whisper-cli", ["-m", model, "-f", wav, "-l", language || "auto", "-osrt", "-of", base, "-ml", String(maxChars), "-sow", "-np"]);
   const limit = Math.max(maxChars, 24);
   const merged = mergeShortCues(splitLongCues(readFileSync(`${base}.srt`, "utf8"), limit), 0.6, 20, limit);
-  writeFileSync(`${base}.srt`, merged);
+  writeFileSync(`${base}.srt`, fixOverlaps(merged).srt);
   return `${base}.srt`;
 }
 
@@ -199,6 +199,30 @@ export function splitLongCues(srt, maxChars = 32) {
     });
   }
   return writeCues(out);
+}
+
+// An .srt from a script or another tool can have cues that overlap or run backwards: CapCut then shows two
+// captions at once and capcut-cli lint fails the draft (caption-overlap). Sort the cues, end each one where
+// the next starts, and join a cue that this leaves shorter than `minSec` into the next one.
+export function fixOverlaps(srt, minSec = 0.1) {
+  const parsed = parseCues(srt);
+  const cues = parsed.filter((c) => c.end > c.start).sort((a, b) => a.start - b.start);
+  let fixed = parsed.length - cues.length;
+  const out = [];
+  for (let i = 0; i < cues.length; i++) {
+    const c = { ...cues[i] };
+    const n = cues[i + 1];
+    if (n && c.end > n.start) {
+      fixed++;
+      c.end = n.start;
+      if (c.end - c.start < minSec) {
+        cues[i + 1] = { ...n, start: c.start, text: `${c.text} ${n.text}` };
+        continue;
+      }
+    }
+    out.push(c);
+  }
+  return { srt: writeCues(out), fixed };
 }
 
 // Whisper sometimes emits a cue of a fraction of a second; nobody can read it. Join any cue shorter
@@ -317,6 +341,33 @@ export function buildSpec(style, opts) {
   return { name, width: cv.width, height: cv.height, fps: 30, ratio: cv.ratio, tracks, operations };
 }
 
+function lastJson(text) {
+  for (const line of String(text).trim().split(/\r?\n/).reverse()) {
+    try {
+      return JSON.parse(line);
+    } catch {}
+  }
+  return null;
+}
+
+// capcut-cli 0.35/0.36 compile writes a slowed clip's speed on the segment but leaves its speed material
+// at 1, and CapCut plays the material, so the clip ends early and the shot goes black. Its lint reports
+// each one as speed-material-mismatch; `capcut speed` on the same value writes both.
+function resyncSpeeds(capcut, draft) {
+  const mismatches = () =>
+    (lastJson(run("npx", [...capcut, "lint", draft], { allowFail: true }).stdout)?.issues || []).filter((i) => i.code === "speed-material-mismatch");
+  const issues = mismatches();
+  for (const issue of issues) {
+    const id = issue.location?.segment_id;
+    const speed = Number(issue.message?.match(/declares speed ([\d.]+)/)?.[1]);
+    if (!id || !(speed > 0)) throw new Error(`cannot read the speed lint issue, so the draft keeps a wrong speed: ${issue.message}`);
+    run("npx", [...capcut, "speed", draft, id, String(speed)]);
+  }
+  const left = issues.length ? mismatches().length : 0;
+  if (left) throw new Error(`${left} slowed clip(s) in ${draft} still play at the wrong speed after the fix; run capcut-cli lint on it.`);
+  return issues.length;
+}
+
 function main() {
   const a = parseArgs(process.argv.slice(2));
   if (a.help || !a.style || !a.voice || !a.broll.length) {
@@ -331,7 +382,18 @@ function main() {
   const voiceLen = duration(voice);
   const broll = listBroll(a.broll);
   const wordsPerChunk = style.captions?.words_per_chunk ?? 3;
-  const srt = a.srt ? resolve(a.srt) : srtFromWhisper(voice, a.whisperModel, Math.max(8, wordsPerChunk * 7), a.language, out);
+  let srt = a.srt ? resolve(a.srt) : srtFromWhisper(voice, a.whisperModel, Math.max(8, wordsPerChunk * 7), a.language, out);
+  let captionsFixed = 0;
+  if (a.srt) {
+    if (!existsSync(srt)) throw new Error(`Caption file not found: ${srt}`);
+    // Never edit the user's file: write the repaired copy into the work folder.
+    const fix = fixOverlaps(readFileSync(srt, "utf8"));
+    captionsFixed = fix.fixed;
+    if (fix.fixed) {
+      srt = join(out, "captions-fixed.srt");
+      writeFileSync(srt, fix.srt);
+    }
+  }
   const name = a.name || `TKP ${basename(voice, extname(voice))}`;
   const spec = buildSpec(style, { voice, voiceLen, broll, music: a.music && resolve(a.music), srt, name, title: a.title });
   const specFile = join(out, "capcut-spec.json");
@@ -346,7 +408,11 @@ function main() {
   const args = [...capcut, "compile", specFile];
   if (a.drafts) args.push("--drafts", resolve(a.drafts));
   const r = run("npx", args);
-  console.log(r.stdout.trim());
+  const compiled = lastJson(r.stdout.split(/\r?\n/).find((l) => l.trim().startsWith("{")) || "");
+  const draft = compiled?.draft_path;
+  if (!draft) throw new Error(`capcut-cli gave no draft_path: ${r.stdout.slice(-400)}`);
+  const speedFixed = spec.tracks[0].items.some((i) => i.speed) ? resyncSpeeds(capcut, draft) : 0;
+  console.log(JSON.stringify({ ...compiled, speed_resynced: speedFixed, captions_fixed: captionsFixed }));
 }
 
 // Compare real paths: a file:// string breaks on spaces ("Application Support") and on Windows drive letters.

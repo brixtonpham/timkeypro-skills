@@ -80,6 +80,9 @@ Trust rules:
 - `audio.beat.confidence` under 0.3 means the "tempo" is speech rhythm, not music. Do not claim cuts on beat.
 - Compare `cut_on_beat_ratio` with `chance_ratio`. Only a ratio clearly above chance means the editor cut on the beat.
 - `cuts` counts hard cuts. Slow fades and moving-camera shots can hide cuts; say so when the frames disagree.
+- With no `--threshold`, a reference with 0 cuts at 0.3 is measured again at 0.12 (soft transitions) and
+  `pacing.threshold_note` says so. Check that the frames really change scene; a moving camera can also pass 0.12.
+  Pass `--threshold 0.3` to keep the strict value.
 
 ## 3. Read the frames and complete style.json
 
@@ -146,7 +149,11 @@ node scripts/apply-style.mjs "<style.json>" --voice "<voice.mp3>" --broll "<brol
 
 - It writes `<work>/apply/capcut-spec.json`, checks it with `capcut-cli compile --check`, then builds the draft
   in CapCut's own drafts folder. Add `--plan-only` to stop after the check.
-- `--srt <file>` uses the user's own captions instead of whisper. Use it when they have a script.
+- `--srt <file>` uses the user's own captions instead of whisper. Use it when they have a script. Cues that
+  overlap or run backwards are repaired in a copy (`<work>/apply/captions-fixed.srt`, count in `captions_fixed`);
+  the user's file is never edited.
+- A b-roll clip shorter than its shot is slowed to fill it. The script re-syncs those speeds after the build
+  (capcut-cli 0.35 leaves CapCut's speed material at 1x; count in `speed_resynced`).
 - On success it prints `draft_path`. Tell the user: open CapCut, the project "<name>" is in the list;
   every clip, caption and the music stay editable.
 - Then run `npx --yes capcut-cli@0.35.0 lint "<draft_path>" -H` and fix what it lists (or explain it).
