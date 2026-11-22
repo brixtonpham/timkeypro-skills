@@ -1,0 +1,21 @@
+{
+  "name": "timkeypro-video-mcpb",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "pack": "node pack.mjs",
+    "test": "node tests/run-tests.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

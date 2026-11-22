@@ -1,0 +1,6 @@
+# Built output: the .mcpb is attached to a GitHub release, not committed.
+*.mcpb
+server/
+build/
+node_modules/
+icon.png

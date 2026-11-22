@@ -44,6 +44,14 @@ Với Windows, tải `whisper-bin-x64.zip` ở trang releases của whisper.cpp 
 
 Claude Code cần gói Claude Pro trở lên.
 
+### Claude Desktop (không cần Claude Code)
+
+Skill `clone-edit-style` cũng có dạng tiện ích cho Claude Desktop, dùng được cả gói miễn phí. Tải file
+`timkeypro-video.mcpb` ở trang [GitHub Releases](https://github.com/brixtonpham/timkeypro-skills/releases),
+bấm đúp vào file, Claude Desktop sẽ mở hộp thoại cài đặt. Vẫn cần cài công cụ ở bước 1.
+
+English: download `timkeypro-video.mcpb` from the GitHub Releases page and double-click it; Claude Desktop opens the install dialog.
+
 ### 3. Thêm dữ liệu YouTube (tùy chọn, miễn phí)
 
 Kết nối TimKeyPro để Claude tìm video "outlier" trong ngách của bạn làm mẫu:

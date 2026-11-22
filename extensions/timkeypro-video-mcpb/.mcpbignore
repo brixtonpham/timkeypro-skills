@@ -1,0 +1,12 @@
+# Only manifest.json, icon.png and the built server/ folder go into the bundle.
+src/
+tests/
+node_modules/
+build/
+build.mjs
+pack.mjs
+package.json
+package-lock.json
+README.md
+.gitignore
+*.mcpb
