@@ -1,0 +1,17 @@
+{
+  "name": "timkeypro",
+  "owner": {
+    "name": "TimKeyPro",
+    "url": "https://timkeypro.com"
+  },
+  "metadata": {
+    "description": "Skill video cho Claude của bạn: bắt chước phong cách edit, dựng nháp CapCut, kịch bản bán hàng, một video ra nhiều nền tảng, hook 5 giây, tự kiểm tra trước khi đăng. Video skills for your own Claude."
+  },
+  "plugins": [
+    {
+      "name": "timkeypro-video",
+      "source": "./plugins/timkeypro-video",
+      "description": "Clone any video's edit style into an editable CapCut draft, write natural Vietnamese sales scripts, repurpose one video for every platform, score 5-second hooks, and self-check before upload."
+    }
+  ]
+}
