@@ -1,0 +1,95 @@
+{
+  "name": "Tin tức nhanh 60 giây",
+  "use_for": "Bản tin ngắn: tóm tắt một tin nóng, công nghệ, tài chính trong khoảng một phút.",
+  "notes": "Mở đầu bằng tít tin trong 5 giây với 3 lần cắt, rồi ~24 lần cắt/phút (mỗi cảnh ~2,5 s) theo từng ý của tin. Phụ đề chữ hẹp trên nền xanh đậm như thanh chữ bản tin, tô đỏ từ khóa. Giọng đọc nhanh, nhạc nền gần như im (-26 dB) để tin rõ ràng. Gần như toàn cắt thẳng, màu lạnh trung tính.",
+  "source": {
+    "kind": "preset",
+    "preset": "tin-nhanh-60-giay",
+    "duration_s": 60,
+    "aspect": "9:16",
+    "resolution": "1080x1920",
+    "fps": 30,
+    "measured_with": null,
+    "measured_at": null,
+    "note": "Starting values chosen by TimKeyPro, not measured from any channel"
+  },
+  "pacing": {
+    "cuts": 24,
+    "cuts_per_min": 24,
+    "shot_len_s": {
+      "p10": 1.5,
+      "median": 2.5,
+      "p90": 3.8,
+      "longest": 5
+    },
+    "curve_cpm_per_30s": null,
+    "hook_0_5s": {
+      "cuts": 3
+    },
+    "cut_times_s": null
+  },
+  "audio": {
+    "integrated_lufs": -14,
+    "range_lu": null,
+    "true_peak_dbfs": -1,
+    "beat": null,
+    "music_db_under_voice": -26
+  },
+  "speech": {
+    "language": "vi",
+    "words": 176,
+    "words_per_min_spoken": 185,
+    "speech_share_of_runtime": 0.95,
+    "spoken_s": 57,
+    "first_line": null
+  },
+  "grade": {
+    "measured": null,
+    "lut_hint": "cool"
+  },
+  "captions": {
+    "present": true,
+    "position": {
+      "x": 0.5,
+      "y": 0.72
+    },
+    "font_size_pct_h": 0.055,
+    "font_class": "condensed-sans",
+    "fill": "#FFFFFF",
+    "outline": null,
+    "box": {
+      "color": "#0B1F3A",
+      "alpha": 0.8
+    },
+    "highlight": {
+      "color": "#FF3B30",
+      "rule": "keyword"
+    },
+    "words_per_chunk": 3,
+    "case": "sentence",
+    "animation": "none"
+  },
+  "zoom": {
+    "punch_in_per_min": 3,
+    "scale": 1.12
+  },
+  "broll": {
+    "share_of_runtime": 0.85,
+    "kinds": [
+      "stock",
+      "screen",
+      "text_card"
+    ]
+  },
+  "transitions": {
+    "hard_cut": 0.95,
+    "other": "whoosh"
+  },
+  "hook": {
+    "cuts_0_5s": 3,
+    "pattern": "bold claim",
+    "title_card": true,
+    "title_text": null
+  },
+  "frames": []
+}

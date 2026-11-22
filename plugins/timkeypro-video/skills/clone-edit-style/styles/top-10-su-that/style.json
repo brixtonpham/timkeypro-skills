@@ -1,0 +1,95 @@
+{
+  "name": "Top 10 sự thật",
+  "use_for": "Video dạng danh sách (top 10, 7 điều bạn chưa biết): nhịp nhanh, mỗi mục một con số lớn.",
+  "notes": "Nhịp nhanh (~24 lần cắt/phút, mỗi cảnh ~2,5 s) giữ người xem qua từng mục. Mở đầu 4 lần cắt trong 5 giây, hé lộ trước mục hấp dẫn nhất. Phụ đề in hoa đậm, 3 từ/lần, tô vàng con số và từ khóa. Zoom 115% bốn lần/phút để nhấn ý. Thêm tiếng whoosh khi đổi mục; màu tương phản cao.",
+  "source": {
+    "kind": "preset",
+    "preset": "top-10-su-that",
+    "duration_s": 480,
+    "aspect": "16:9",
+    "resolution": "1920x1080",
+    "fps": 30,
+    "measured_with": null,
+    "measured_at": null,
+    "note": "Starting values chosen by TimKeyPro, not measured from any channel"
+  },
+  "pacing": {
+    "cuts": 192,
+    "cuts_per_min": 24,
+    "shot_len_s": {
+      "p10": 1.4,
+      "median": 2.5,
+      "p90": 4,
+      "longest": 7
+    },
+    "curve_cpm_per_30s": null,
+    "hook_0_5s": {
+      "cuts": 4
+    },
+    "cut_times_s": null
+  },
+  "audio": {
+    "integrated_lufs": -14,
+    "range_lu": null,
+    "true_peak_dbfs": -1,
+    "beat": null,
+    "music_db_under_voice": -20
+  },
+  "speech": {
+    "language": "vi",
+    "words": 1288,
+    "words_per_min_spoken": 175,
+    "speech_share_of_runtime": 0.92,
+    "spoken_s": 441.6,
+    "first_line": null
+  },
+  "grade": {
+    "measured": null,
+    "lut_hint": "high-contrast"
+  },
+  "captions": {
+    "present": true,
+    "position": {
+      "x": 0.5,
+      "y": 0.84
+    },
+    "font_size_pct_h": 0.06,
+    "font_class": "bold-sans",
+    "fill": "#FFFFFF",
+    "outline": {
+      "color": "#000000",
+      "px": 6
+    },
+    "box": null,
+    "highlight": {
+      "color": "#FFE600",
+      "rule": "keyword"
+    },
+    "words_per_chunk": 3,
+    "case": "upper",
+    "animation": "pop"
+  },
+  "zoom": {
+    "punch_in_per_min": 4,
+    "scale": 1.15
+  },
+  "broll": {
+    "share_of_runtime": 0.85,
+    "kinds": [
+      "stock",
+      "ai_image",
+      "text_card"
+    ]
+  },
+  "transitions": {
+    "hard_cut": 0.85,
+    "other": "whoosh"
+  },
+  "hook": {
+    "cuts_0_5s": 4,
+    "pattern": "number",
+    "title_card": true,
+    "title_text": null
+  },
+  "frames": []
+}

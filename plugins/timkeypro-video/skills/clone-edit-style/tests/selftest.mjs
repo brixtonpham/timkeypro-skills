@@ -3,7 +3,7 @@
 // 128 BPM click track, measures it, then plans (but does not write) a CapCut draft from it.
 // Needs ffmpeg, ffprobe and npx. Run: node tests/selftest.mjs
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { homedir } from "node:os";
@@ -71,6 +71,35 @@ const lastEnd = split[split.length - 1].split("\n")[1].split("--> ")[1];
 check("long caption cues are split", split.length >= 3 && lines.every((l) => l.length <= 24) && lastEnd === "00:00:06,000", `${split.length} cues, longest ${Math.max(...lines.map((l) => l.length))} chars`);
 const merged = mergeShortCues(readFileSync(srt, "utf8"));
 check("short caption cues are merged", merged.split("-->").length === 2, merged.replace(/\n/g, " | "));
+
+// Every preset in styles/ is internally consistent, plans to its own pacing and compiles in capcut-cli.
+const { planShots, buildSpec } = await import(join(scripts, "apply-style.mjs"));
+const stylesDir = join(here, "..", "styles");
+const presetProblems = [];
+const presetSlugs = readdirSync(stylesDir).filter((d) => existsSync(join(stylesDir, d, "style.json")));
+for (const slug of presetSlugs) {
+  const p = JSON.parse(readFileSync(join(stylesDir, slug, "style.json"), "utf8"));
+  const bad = (msg) => presetProblems.push(`${slug}: ${msg}`);
+  const { p10, median, p90 } = p.pacing.shot_len_s;
+  const hookCuts = p.hook.cuts_0_5s;
+  if (p.source.kind !== "preset" || !/not measured/.test(p.source.note)) bad("source must say kind preset, not measured");
+  if (!(p10 < median && median < p90)) bad(`shot lengths not ordered: ${p10} ${median} ${p90}`);
+  if (Math.abs(p.pacing.cuts_per_min - 60 / median) > 0.1 * (60 / median)) bad(`cuts_per_min ${p.pacing.cuts_per_min} vs 60/median ${(60 / median).toFixed(1)}`);
+  if (hookCuts !== p.pacing.hook_0_5s.cuts || 5 / (hookCuts + 1) < 0.6) bad(`hook cuts ${hookCuts} do not fit in 5 s`);
+  if (!["9:16", "16:9"].includes(p.source.aspect)) bad(`aspect ${p.source.aspect}`);
+  const shots = planShots(p, p.source.duration_s);
+  const mean = shots.reduce((a, b) => a + b, 0) / shots.length;
+  if (Math.abs(mean - median) > 0.25 * median) bad(`planned mean shot ${mean.toFixed(2)} s vs median ${median}`);
+  let t = 0;
+  const hookShots = shots.filter((len) => ((t += len), t - len < 5 - 0.01)).length;
+  if (hookShots !== hookCuts + 1) bad(`hook has ${hookShots} shots, expected ${hookCuts + 1}`);
+  const spec = buildSpec(p, { voice: video, voiceLen: total, broll: [{ path: video, photo: false, length: total }], srt, name: `Preset ${slug}`, title: "Tiêu đề thử" });
+  const specFile = join(work, `preset-${slug}.json`);
+  writeFileSync(specFile, JSON.stringify(spec));
+  const r = spawnSync("npx", ["--yes", "capcut-cli@0.35.0", "compile", specFile, "--check"], { encoding: "utf8" });
+  if (r.status !== 0) bad(`capcut-cli --check failed: ${(r.stderr || r.stdout).slice(-300)}`);
+}
+check("presets plan and compile", presetSlugs.length === 5 && presetProblems.length === 0, presetProblems.join("; ") || `${presetSlugs.length} presets`);
 
 rmSync(work, { recursive: true, force: true });
 console.log(failed ? `\n${failed} check(s) failed` : "\nAll checks passed");

@@ -1,0 +1,97 @@
+{
+  "name": "Trích dẫn động lực",
+  "use_for": "Video ngắn trích dẫn, câu nói hay, bài học cuộc sống: chữ là chính, nhạc dẫn dắt cảm xúc.",
+  "notes": "Nhịp chậm (~12 lần cắt/phút, mỗi cảnh ~5 s) để người xem kịp đọc câu trích dẫn. Nhạc là chính: nhạc chỉ thấp hơn giọng 12 dB, giọng đọc chậm ~110 từ/phút và có khoảng lặng. Chữ có chân, giữa khung, nền đen mờ, hiện dần từng chữ. Zoom rất nhẹ 108%, chuyển cảnh mờ dần, màu nhạt để chữ nổi.",
+  "source": {
+    "kind": "preset",
+    "preset": "trich-dan-dong-luc",
+    "duration_s": 40,
+    "aspect": "9:16",
+    "resolution": "1080x1920",
+    "fps": 30,
+    "measured_with": null,
+    "measured_at": null,
+    "note": "Starting values chosen by TimKeyPro, not measured from any channel"
+  },
+  "pacing": {
+    "cuts": 8,
+    "cuts_per_min": 12,
+    "shot_len_s": {
+      "p10": 3.5,
+      "median": 5,
+      "p90": 7,
+      "longest": 9
+    },
+    "curve_cpm_per_30s": null,
+    "hook_0_5s": {
+      "cuts": 1
+    },
+    "cut_times_s": null
+  },
+  "audio": {
+    "integrated_lufs": -14,
+    "range_lu": null,
+    "true_peak_dbfs": -1,
+    "beat": null,
+    "music_db_under_voice": -12
+  },
+  "speech": {
+    "language": "vi",
+    "words": 44,
+    "words_per_min_spoken": 110,
+    "speech_share_of_runtime": 0.6,
+    "spoken_s": 24,
+    "first_line": null
+  },
+  "grade": {
+    "measured": null,
+    "lut_hint": "desaturated"
+  },
+  "captions": {
+    "present": true,
+    "position": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "font_size_pct_h": 0.055,
+    "font_class": "serif",
+    "fill": "#FFFFFF",
+    "outline": {
+      "color": "#000000",
+      "px": 2
+    },
+    "box": {
+      "color": "#000000",
+      "alpha": 0.35
+    },
+    "highlight": {
+      "color": "#F5D07A",
+      "rule": "keyword"
+    },
+    "words_per_chunk": 4,
+    "case": "sentence",
+    "animation": "typewriter"
+  },
+  "zoom": {
+    "punch_in_per_min": 2,
+    "scale": 1.08
+  },
+  "broll": {
+    "share_of_runtime": 1,
+    "kinds": [
+      "stock",
+      "ai_image"
+    ]
+  },
+  "transitions": {
+    "hard_cut": 0.5,
+    "other": "fade"
+  },
+  "hook": {
+    "cuts_0_5s": 1,
+    "pattern": "bold claim",
+    "title_card": false,
+    "title_text": null
+  },
+  "frames": []
+}

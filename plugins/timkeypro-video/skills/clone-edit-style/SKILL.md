@@ -1,6 +1,6 @@
 ---
 name: clone-edit-style
-description: Clone the EDIT STYLE of any reference video (pacing, cuts per minute, hook speed, caption look, zooms, music level, colour) into a reusable style.json, then apply it to the user's own voice and b-roll as an editable CapCut draft. Use when the user shares a video and asks "edit like this", "make my video in this style", "clone this edit", "dựng giống video này", "bắt chước phong cách edit", "làm video theo style này", or asks to turn a style into a CapCut project. Works for YouTube, Shorts, TikTok, Reels and Facebook videos. Reply in the user's language.
+description: Clone the EDIT STYLE of any reference video (pacing, cuts per minute, hook speed, caption look, zooms, music level, colour) into a reusable style.json, then apply it to the user's own voice and b-roll as an editable CapCut draft. Use when the user shares a video and asks "edit like this", "make my video in this style", "clone this edit", "dựng giống video này", "bắt chước phong cách edit", "làm video theo style này", or asks to turn a style into a CapCut project. Also use when the user has no reference video and wants a ready Vietnamese style (kể chuyện lịch sử, top 10, review TikTok Shop, trích dẫn, tin nhanh). Works for YouTube, Shorts, TikTok, Reels and Facebook videos. Reply in the user's language.
 ---
 
 # Clone edit style
@@ -37,6 +37,28 @@ copy first (for example with the app they use, or `yt-dlp <url>` if they are all
 If the user has no reference yet and the TimKeyPro connector is available, offer to find one:
 `keyword_report` on their niche lists outlier videos from small channels; a video that beats its
 channel size is a good style to study.
+
+## No reference video? Start from a preset
+
+When the user has no reference video (or wants to start now), offer a ready style from `styles/`
+(next to this file; `styles/README.md` has the table):
+
+| Slug | Style | Aspect |
+|---|---|---|
+| `lich-su-ke-chuyen` | Kể chuyện lịch sử: slow, calm, long form | 16:9 |
+| `top-10-su-that` | Top 10 sự thật: fast list | 16:9 |
+| `review-tiktok-shop` | Review sản phẩm TikTok Shop: fast hook, big captions | 9:16 |
+| `trich-dan-dong-luc` | Trích dẫn động lực: quotes, slow, music-led | 9:16 |
+| `tin-nhanh-60-giay` | Tin tức nhanh 60 giây | 9:16 |
+
+1. Pick the closest one with the user, read its `style.json` and show the style card from step 4,
+   built from the preset's numbers, plus its `notes`. Say plainly that these are starting values
+   chosen by TimKeyPro, not measured from any channel; never present them as a channel's style or
+   promise results.
+2. Let the user tweak it (pace, captions, aspect, music level). Keep the numbers consistent:
+   `cuts_per_min` ≈ 60 / `shot_len_s.median`, p10 < median < p90, hook cuts fit in 5 s.
+3. Copy it to `~/TimKeyPro/styles/<slug>/style.json` (keep `source.kind: "preset"`), then
+   continue at step 5. Steps 2-4 are skipped (the card above takes the place of step 4).
 
 ## 2. Measure
 

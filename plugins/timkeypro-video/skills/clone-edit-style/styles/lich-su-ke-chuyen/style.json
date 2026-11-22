@@ -1,0 +1,95 @@
+{
+  "name": "Kể chuyện lịch sử",
+  "use_for": "Video dài kể chuyện lịch sử, nhân vật, bí ẩn: giọng đọc chậm, ảnh minh hoạ và tư liệu.",
+  "notes": "Nhịp chậm (~10 lần cắt/phút, mỗi cảnh ~6 s) để người xem kịp nghe kể. Mở đầu chỉ 1 lần cắt: vào thẳng câu chuyện. Phụ đề chữ có chân, 5 từ/lần, sát đáy khung, không tô màu để không giành chú ý với hình. Zoom nhẹ 110% hai lần mỗi phút cho ảnh tĩnh đỡ đứng. Nhạc nền rất nhỏ (-24 dB dưới giọng), màu ấm như tư liệu cũ.",
+  "source": {
+    "kind": "preset",
+    "preset": "lich-su-ke-chuyen",
+    "duration_s": 600,
+    "aspect": "16:9",
+    "resolution": "1920x1080",
+    "fps": 30,
+    "measured_with": null,
+    "measured_at": null,
+    "note": "Starting values chosen by TimKeyPro, not measured from any channel"
+  },
+  "pacing": {
+    "cuts": 100,
+    "cuts_per_min": 10,
+    "shot_len_s": {
+      "p10": 3.5,
+      "median": 6,
+      "p90": 9,
+      "longest": 14
+    },
+    "curve_cpm_per_30s": null,
+    "hook_0_5s": {
+      "cuts": 1
+    },
+    "cut_times_s": null
+  },
+  "audio": {
+    "integrated_lufs": -14,
+    "range_lu": null,
+    "true_peak_dbfs": -1,
+    "beat": null,
+    "music_db_under_voice": -24
+  },
+  "speech": {
+    "language": "vi",
+    "words": 1260,
+    "words_per_min_spoken": 140,
+    "speech_share_of_runtime": 0.9,
+    "spoken_s": 540,
+    "first_line": null
+  },
+  "grade": {
+    "measured": null,
+    "lut_hint": "warm"
+  },
+  "captions": {
+    "present": true,
+    "position": {
+      "x": 0.5,
+      "y": 0.88
+    },
+    "font_size_pct_h": 0.05,
+    "font_class": "serif",
+    "fill": "#FFFFFF",
+    "outline": {
+      "color": "#000000",
+      "px": 3
+    },
+    "box": null,
+    "highlight": {
+      "color": "#F2C14E",
+      "rule": "none"
+    },
+    "words_per_chunk": 5,
+    "case": "sentence",
+    "animation": "none"
+  },
+  "zoom": {
+    "punch_in_per_min": 2,
+    "scale": 1.1
+  },
+  "broll": {
+    "share_of_runtime": 0.95,
+    "kinds": [
+      "ai_image",
+      "stock",
+      "text_card"
+    ]
+  },
+  "transitions": {
+    "hard_cut": 0.7,
+    "other": "fade"
+  },
+  "hook": {
+    "cuts_0_5s": 1,
+    "pattern": "story",
+    "title_card": true,
+    "title_text": null
+  },
+  "frames": []
+}
