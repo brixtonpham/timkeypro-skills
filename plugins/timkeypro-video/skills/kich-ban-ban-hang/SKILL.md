@@ -1,6 +1,6 @@
 ---
 name: kich-ban-ban-hang
-description: Use this skill for ANY request to write, rewrite or fix a short sales/product video script (TikTok Shop, Shopee Video, Facebook Reels, 15/30/60 s), even a simple one: it holds the buyer interview, hook patterns, timing tables, the list of AI-sounding Vietnamese phrases to avoid, and the rules against invented sales numbers, fake reviews and false claims (TikTok Shop AIGC label). Triggers: "viết kịch bản bán hàng", "kịch bản TikTok Shop", "kịch bản Shopee Video", "kịch bản review sản phẩm", "lời thoại video bán hàng", "kịch bản đỡ giọng AI", "sửa kịch bản nghe như văn AI / giọng bot", "sales video script", "TikTok Shop script", "product video script", "make my script sound less AI". Reply in the user's language.
+description: "Use this skill for ANY request to write, rewrite or fix a short sales/product video script (TikTok Shop, Shopee Video, Facebook Reels, 15/30/60 s), even a simple one: it holds the buyer interview, hook patterns, timing tables, the list of AI-sounding Vietnamese phrases to avoid, and the rules against invented sales numbers, fake reviews and false claims (TikTok Shop AIGC label). Triggers: \"viết kịch bản bán hàng\", \"kịch bản TikTok Shop\", \"kịch bản Shopee Video\", \"kịch bản review sản phẩm\", \"lời thoại video bán hàng\", \"kịch bản đỡ giọng AI\", \"sửa kịch bản nghe như văn AI / giọng bot\", \"sales video script\", \"TikTok Shop script\", \"product video script\", \"make my script sound less AI\". Reply in the user's language."
 ---
 
 # Sales video script (kịch bản bán hàng)

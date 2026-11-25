@@ -13,6 +13,12 @@ Scripts live next to this file in `scripts/`. Run them with `node`. They need No
 `ffprobe`. Captions also need `whisper-cli` and a whisper.cpp model. The CapCut step runs
 `npx capcut-cli@0.35.0` (MIT, downloads on first use).
 
+Loaded from the TimKeyPro connector (the skill came over MCP, so no `scripts/` folder is on disk)? Read
+`skill://timkeypro/clone-edit-style/scripts/measure-style.mjs` and `.../scripts/apply-style.mjs` with the MCP
+resource-read tool, save both unchanged into `<work>/scripts/`, and run them from there. Read a preset the same
+way (`.../styles/<slug>/style.json`). If this host cannot run commands (claude.ai chat), say the skill needs
+Claude Code or Claude Desktop with the TimKeyPro video extension, and stop.
+
 ## 0. Check the machine (once)
 
 ```bash

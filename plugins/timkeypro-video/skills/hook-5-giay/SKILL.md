@@ -1,6 +1,6 @@
 ---
 name: hook-5-giay
-description: Use this skill for ANY request to write, improve or score a video hook, intro or opening line, even a simple one: it holds five hook patterns (question, number, contrast, story, bold claim), the 0-10 scoring rubric, faceless-video rules, and how to use TimKeyPro keyword_report / video_brief outlier videos as evidence when that connector is connected. Triggers: "viết hook", "hook 5 giây", "câu mở đầu video", "chấm điểm hook", "hook này ổn không", "mở đầu sao cho người ta xem tiếp", "intro kênh không mặt", "write a hook", "score my hook", "video intro", "first 5 seconds", "faceless video opening". Reply in the user's language.
+description: "Use this skill for ANY request to write, improve or score a video hook, intro or opening line, even a simple one: it holds five hook patterns (question, number, contrast, story, bold claim), the 0-10 scoring rubric, faceless-video rules, and how to use TimKeyPro keyword_report / video_brief outlier videos as evidence when that connector is connected. Triggers: \"viết hook\", \"hook 5 giây\", \"câu mở đầu video\", \"chấm điểm hook\", \"hook này ổn không\", \"mở đầu sao cho người ta xem tiếp\", \"intro kênh không mặt\", \"write a hook\", \"score my hook\", \"video intro\", \"first 5 seconds\", \"faceless video opening\". Reply in the user's language."
 ---
 
 # 5-second hook (hook 5 giây)
