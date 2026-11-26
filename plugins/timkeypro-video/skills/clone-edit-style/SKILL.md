@@ -16,8 +16,18 @@ Scripts live next to this file in `scripts/`. Run them with `node`. They need No
 Loaded from the TimKeyPro connector (the skill came over MCP, so no `scripts/` folder is on disk)? Read
 `skill://timkeypro/clone-edit-style/scripts/measure-style.mjs` and `.../scripts/apply-style.mjs` with the MCP
 resource-read tool, save both unchanged into `<work>/scripts/`, and run them from there. Read a preset the same
-way (`.../styles/<slug>/style.json`). If this host cannot run commands (claude.ai chat), say the skill needs
-Claude Code or Claude Desktop with the TimKeyPro video extension, and stop.
+way (`.../styles/<slug>/style.json`).
+
+**Claude on the web or mobile (a cloud sandbox, not the user's computer).** You are there when the user's
+files arrive as chat attachments (`/mnt/user-data/uploads/`) and nothing of theirs is on disk.
+- The video must be attached to the chat. If no attachment is there, do not search the disk for it: ask the
+  user, in one line, to attach the video file (or a 720p copy if it is too big to upload), and stop.
+- Measuring and the style card (steps 0 to 4) work in the sandbox when it has Node, `ffmpeg` and `ffprobe`: run them.
+  Without `whisper-cli`, skip the caption measurements and say so; never guess them.
+- The CapCut draft (step 5) needs CapCut on the user's own computer. Give them the `style.json` as a file
+  and say the draft is built in Claude Code or Claude Desktop with the TimKeyPro video extension.
+- If the host cannot run commands at all, say the skill needs Claude Code or Claude Desktop with the
+  TimKeyPro video extension, and stop.
 
 ## 0. Check the machine (once)
 
